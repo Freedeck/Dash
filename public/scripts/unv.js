@@ -15,7 +15,14 @@ const unv = {
 		send: (event, ...data) => unv.socket._ref.emit(event, ...data),
 		on: (event, cb) => unv.socket._ref.on(event, cb),
 		once: (event, cb) => unv.socket._ref.once(event, cb)
-	}
+	},
+
+	getRefreshables: (plugin) => {
+		return new Promise((resolve, reject) => {
+			unv.socket.send('get plugin refreshable', plugin);
+			unv.socket.once('plugin refreshable', (data) => resolve(data));
+		});
+	},
 }
 
 unv.socket._ref = new io();

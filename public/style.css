@@ -1,1 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+
+body {
+	  font-family: 'Rubik', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+  overflow: hidden;
+  padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+}

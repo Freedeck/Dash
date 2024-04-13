@@ -2,12 +2,19 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
 	<title>Freedeck Dash</title>
+	<meta content="#f0f0f0" data-react-helmet="true" name="theme-color" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Freedeck Dash">
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	
+	<div id="mods"></div>
+	<!-- <button id="addmod">Add Module (opens editor)</button> -->
+	<!-- <button onclick="window.location.reload()">Reload</button> -->
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="/scripts/dashMain.js" type="module"></script>
 </body>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #modules {
+            position: relative;
+            width: 1500px;
+            height: 500px;
+            border: 1px solid black;
+        }
+        .module {
+            position: absolute;
+            border: 1px solid red;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="modules"></div>
+
+    <form id="moduleForm">
+        <label for="type">Type:</label>
+        <select id="type">
+            <option value="text">Text</option>
+            <option value="callback">Callback</option>
+            <option value="refreshable">Refreshable</option>
+            <option value="image">Image</option>
+            <option value="slider">Slider</option>
+        </select>
+        <br>
+        <label for="x">X:</label>
+        <input type="number" id="x">
+        <br>
+        <label for="y">Y:</label>
+        <input type="number" id="y">
+        <br>
+        <label for="w">Width:</label>
+        <input type="number" id="w">
+        <br>
+        <label for="h">Height:</label>
+        <input type="number" id="h">
+        <br>
+		<label for="data">Data</label>
+		<ul></ul>
+        <button type="submit">Update</button>
+    </form>
+
+	<textarea id="export"></textarea>
+
+	<script src="/socket.io/socket.io.js"></script>
+    <script src="/scripts/moduleEditor.js" type="module"></script>
+</body>
+</html>
