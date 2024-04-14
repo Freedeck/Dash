@@ -22,6 +22,7 @@ const callbacks = {};
 const pluginPath = path.resolve('plugins');
 
 fs.readdirSync(pluginPath).forEach((file) => {
+	if(!file.endsWith('.js')) return;
 	const plugin = require(path.resolve(pluginPath, file));
 	plugins[plugin.id] = plugin;
 	plugin.callbacks.forEach((cb) => {
@@ -46,9 +47,9 @@ const serverData = {
 Object.keys(plugins).forEach((plugin) => {
 	plugin = plugins[plugin];
 	Object.keys(plugin.refreshable).forEach((slot) => {
-		console.log(slot)
+		console.log(plugin.id, slot)
 		app.get('/ref/' + plugin.id+'/'+slot, (req, res) => {
-			res.send(plugin.refreshable[slot]);
+			res.send(""+plugin.refreshable[slot]);
 		})
 	})
 });

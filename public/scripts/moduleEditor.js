@@ -5,6 +5,9 @@ await unv.waitForLoad();
 let selectedModule = null;
 let selectedData = null;
 
+const scaleFactorw = window.innerWidth / 1290;
+document.querySelector('#modules').style.width = `${window.innerWidth / scaleFactorw}px`;
+
 // Fetch modules from JSON file
 fetch('/modules.json')
     .then(response => response.json())
@@ -14,14 +17,17 @@ fetch('/modules.json')
             // Create a new module element
             let module = document.createElement('div');
             module.classList.add('module');
-            module.style.left = `${moduleData.x}px`;
-            module.style.top = `${moduleData.y}px`;
-            module.style.width = `${moduleData.w}px`;
-            module.style.height = `${moduleData.h}px`;
+            module.style.left = `${moduleData.x * scaleFactorw}px`;
+            module.style.top = `${moduleData.y * scaleFactorw}px`;
+            module.style.width = `${moduleData.w * scaleFactorw}px`;
+            module.style.height = `${moduleData.h * scaleFactorw}px`;
             module.dataset.type = moduleData.type;
+			module.style.fontSize = `${moduleData.data.fontSize ? moduleData.data.fontSize : '1em'}`
 			module.dataset.data = JSON.stringify(moduleData.data);
 
 			switch(moduleData.type) {
+				case 'time':
+					module.innerText = new Date(Date.now()).toUTCString();
 				case 'text':
 					module.style.fontFamily = moduleData.data.font;
 					module.innerText = moduleData.data.text;
@@ -34,8 +40,8 @@ fetch('/modules.json')
 					module.dataset.plugin = moduleData.data.plugin;
 					module.dataset.slot = moduleData.data.slot;
 					module.innerText = 'Loading...';
-					unv.getRefreshables(moduleData.data.plugin).then((data) => {
-						module.innerText = data[moduleData.data.slot];
+					fetch('/ref/'+moduleData.data.plugin+'/'+moduleData.data.slot).then(res => res.text()).then(data => {
+						module.innerText = data;
 					});
 					break;
 				case 'image':
@@ -51,27 +57,29 @@ fetch('/modules.json')
 				case 'slider':
 					let slider = document.createElement('input');
 					slider.type = 'range';
-					slider.min = 0;
-					slider.max = 100;
-					slider.step = 1;
-					slider.value = 50;
 					slider.style.width = '100%';
 					slider.style.height = '100%';
 					slider.style.pointerEvents = 'none';
 					module.appendChild(slider);
-					unv.getRefreshables(moduleData.data.plugin).then((data) => {
-						slider.max = data[moduleData.data.slots.max];
-						slider.value = data[moduleData.data.slots.position];
-					});
+					fetch('/ref/'+moduleData.data.plugin+'/'+moduleData.data.slots.max).then(res => res.text()).then(data => slider.max = data);
+					fetch('/ref/'+moduleData.data.plugin+'/'+moduleData.data.slots.position).then(res => res.text()).then(data => slider.value = data);
 					break;
 			}
 
 			setInterval(() => {
 				if(moduleData.type === 'refreshable') {
-					unv.getRefreshables(moduleData.data.plugin).then((data) => {
-						module.innerText = data[moduleData.data.slot];
+					fetch('/ref/'+moduleData.data.plugin+'/'+moduleData.data.slot).then(res => res.text()).then(data => {
+						module.innerText = data;
 					});
 				}
+				if(moduleData.type === 'image') {
+					fetch('/ref/'+moduleData.data.plugin+'/'+moduleData.data.slot).then(res => res.text()).then(data => module.querySelector('img').src = data);
+				}
+				if(moduleData.type === 'slider') {
+					fetch('/ref/'+moduleData.data.plugin+'/'+moduleData.data.slots.max).then(res => res.text()).then(data => module.max = data);
+					fetch('/ref/'+moduleData.data.plugin+'/'+moduleData.data.slots.position).then(res => res.text()).then(data => module.value = data);
+				}
+				if(moduleData.type === 'time') module.innerText = new Date(Date.now()).toUTCString();
 			}, 1000);
 			
 			// Add drag events
@@ -242,10 +250,10 @@ document.querySelector('#moduleForm').addEventListener('submit', (event) => {
 
 	document.querySelectorAll('.module').forEach(module => {
 		mods.push({
-			x: parseInt(module.style.left),
-			y: parseInt(module.style.top),
-			w: parseInt(module.style.width),
-			h: parseInt(module.style.height),
+			x: parseInt(module.style.left) / scaleFactorw,
+			y: parseInt(module.style.top) / scaleFactorw,
+			w: parseInt(module.style.width) / scaleFactorw,
+			h: parseInt(module.style.height) / scaleFactorw,
 			type: module.dataset.type,
 			data: JSON.parse(module.dataset.data),
 			id: module.id ? module.id : Math.random().toString(36).substring(7)

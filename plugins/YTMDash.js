@@ -8,6 +8,9 @@ class YTMD extends Plugin {
 		// 127.0.0.1:9863
 		this.addCallback('ytmd:playpause');
 		this.addCallback('ytmd:next');
+		this.addCallback('ytmd:prev');
+		this.addCallback('ytmd:vol:up');
+		this.addCallback('ytmd:vol:down');
 
 		this.setRefreshableSlot('raw', '{}');
 		this.setRefreshableSlot('title', 'No Track');
@@ -58,6 +61,15 @@ class YTMD extends Plugin {
 				break;
 			case 'ytmd:next':
 				this.sendCommand('track-next');
+				break;
+			case 'ytmd:prev':
+				this.sendCommand('track-previous');
+				break;
+			case 'ytmd:vol:up':
+				this.sendCommand('player-volume-up');
+				break;
+			case 'ytmd:vol:down':
+				this.sendCommand('player-volume-down');
 				break;
 		}
 	}

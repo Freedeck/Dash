@@ -3,10 +3,12 @@ import unv from "./unv.js";
 await unv.waitForLoad();
 
 unv.socket.on('update', (data) => {
-	console.log(data);
+	window.location.reload();
 });
 const moduleMap = new Map();
-
+// const scaleFactorw = window.innerWidth / 1290;
+const scaleFactorw = 1;
+// alert(window.outerHeight)
 const update = () => {
 	// document.querySelector('#mods').innerHTML = '';
 
@@ -32,12 +34,21 @@ unv.server.dash.modules.forEach((module) => {
             moduleMap.set(module.id, el);
             document.querySelector('#mods').appendChild(el);
 	}
-	el.style.left = `${module.x}px`;
-			el.style.top = `${module.y}px`;
-			el.style.width = `${module.w}px`;
-			el.style.height = `${module.h}px`;
+
+
+// Calculate the scale factor
+	
+	// const scaleFactorh = window.innerHeight / 2796;
+	el.style.left = `${module.x * scaleFactorw}px`;
+			el.style.top = `${module.y * scaleFactorw}px`;
+			el.style.width = `${module.w * scaleFactorw}px`;
+			el.style.height = `${module.h * scaleFactorw}px`;
 			el.style.fontFamily = module.data.font;
-	switch(module.type) {
+			el.style.fontSize = module.data.fontSize ? module.data.fontSize : '1em';
+			switch(module.type) {
+		case 'time':
+			el.innerText = new Date(Date.now()).toUTCString();	
+		break;
 		case 'text':
 			el.innerText = module.data.text;
 			break;
@@ -50,8 +61,8 @@ unv.server.dash.modules.forEach((module) => {
 			el.className = 'refreshable';
 			el.dataset.plugin = module.data.plugin;
 			el.dataset.slot = module.data.slot;;
-			unv.getRefreshables(module.data.plugin).then((data) => {
-				el.innerText = data[module.data.slot];
+			fetch('/ref/'+module.data.plugin+'/'+module.data.slot).then(res => res.text()).then(data => {
+				el.innerText = data;
 			});
 			break;
 		case 'image':
