@@ -19,6 +19,24 @@ app.get('/', (req, res) => {
 const plugins = {};
 const callbacks = {};
 
+const clientSupports = [
+	'text',
+	'callback',
+	'refreshable',
+	'image',
+	'slider',
+	'time'
+]
+
+const clientSupportRef = {
+	'text': 'Text element',
+	'callback': 'Button',
+	'refreshable': 'Refreshable element',
+	'image': 'Image element',
+	'slider': 'Slider element',
+	'time': 'Time element'
+}
+
 const pluginPath = path.resolve('plugins');
 
 fs.readdirSync(pluginPath).forEach((file) => {
@@ -40,7 +58,9 @@ const serverData = {
 	},
 	dash: {
 		version: package.version,
-		modules: require('../public/modules.json')
+		modules: require('../public/modules.json'),
+		supported: clientSupports,
+		supportRefs: clientSupportRef,
 	}
 };
 

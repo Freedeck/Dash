@@ -8,6 +8,13 @@ let selectedData = null;
 const scaleFactorw = window.innerWidth / 1290;
 document.querySelector('#modules').style.width = `${window.innerWidth / scaleFactorw}px`;
 
+unv.server.dash.supported.forEach((type) => {
+	let option = document.createElement('option');
+	option.value = type;
+	option.innerText = unv.server.dash.supportRefs[type];
+	document.querySelector('#type').appendChild(option);
+});
+
 // Fetch modules from JSON file
 fetch('/modules.json')
     .then(response => response.json())
